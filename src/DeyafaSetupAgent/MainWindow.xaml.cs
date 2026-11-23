@@ -2,6 +2,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Microsoft.Win32;
+using DeyafaSetupAgent.Diagnostics;
 namespace DeyafaSetupAgent;
 public partial class MainWindow : Window
 {
@@ -24,6 +25,9 @@ public partial class MainWindow : Window
             }
             using var sql = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL");
             lines.Add("SQL instances (registry, 64-bit view): " + (sql is null ? "none detected" : string.Join(", ", sql.GetValueNames())));
+            var report = DiagnosticEngine.Analyze(root);
+            lines.Add("Offline diagnostic findings:");
+            lines.AddRange(report.Findings.Select(f => $"[{f.Severity}] {f.Code}: {f.Message} Action: {f.SuggestedAction}"));
             lines.Add("Scan complete. No changes made.");
             LogBox.Text = string.Join(Environment.NewLine, lines);
         }
