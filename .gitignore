@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+publish/
+*.user
+*.log
+*.bak
+*.mdf
+*.ldf
+.env
+secrets.json
