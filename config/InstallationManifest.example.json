@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "product": "Deyafa POS",
+  "executionMode": "ReadOnlyPreflight",
+  "packages": {
+    "sqlServer": { "installer": null, "sha256": null, "instanceName": null },
+    "crystalReports": { "installer": null, "sha256": null, "architecture": null },
+    "odbc": { "dsnName": null, "driver": null, "architecture": null },
+    "database": { "backupFile": null, "databaseName": null, "policy": "NeverOverwrite" },
+    "application": { "executable": null, "targetDirectory": null }
+  },
+  "activation": { "approvalRequired": true, "approver": "Zeinab" }
+}
