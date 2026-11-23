@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   build:
     runs-on: windows-latest
@@ -11,11 +13,22 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+      - name: Restore
+        run: dotnet restore src/DeyafaSetupAgent/DeyafaSetupAgent.csproj
       - name: Build
-        run: dotnet build src/DeyafaSetupAgent/DeyafaSetupAgent.csproj -c Release
+        run: dotnet build src/DeyafaSetupAgent/DeyafaSetupAgent.csproj -c Release --no-restore
       - name: Publish
         run: dotnet publish src/DeyafaSetupAgent/DeyafaSetupAgent.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish
+      - name: Verify published EXE
+        shell: pwsh
+        run: |
+          $exe = 'publish/DeyafaSetupAgent.exe'
+          if (!(Test-Path $exe)) { throw 'EXE missing' }
+          $item = Get-Item $exe
+          if ($item.Length -lt 100000) { throw 'EXE unexpectedly small' }
+          Get-FileHash $exe -Algorithm SHA256 | Format-List
       - uses: actions/upload-artifact@v4
         with:
           name: DeyafaSetupAgent-V1-win-x64
           path: publish/
+          if-no-files-found: error
